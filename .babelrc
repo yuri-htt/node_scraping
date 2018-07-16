@@ -1,0 +1,19 @@
+{
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "6.10",
+            "browsers": [
+              "last 2 versions"
+            ]
+          }
+        }
+      ],
+      "react"
+    ],
+    "plugins": [
+      "transform-class-properties", "transform-object-rest-spread", "transform-runtime"
+    ]
+  }
