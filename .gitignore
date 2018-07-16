@@ -1,0 +1,12 @@
+# node.js
+#
+node_modules/
+
+# Others
+#
+secret.js
+scraping.db
+bundle.js
+settings.json
+package-lock.json
+*.png
