@@ -1,7 +1,3 @@
-// const puppeteer = require('puppeteer')
-// const secret = require('./secret')
-
-
 // データベースに接続
 const NeDB = require('nedb')
 const path = require('path')

@@ -1,6 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-//plugins.push(new webpack.DefinePlugin({ "global.GENTLY": false }));
 
 module.exports = {
   mode: 'development',
@@ -11,7 +10,7 @@ module.exports = {
     path: path.join(__dirname, 'public'),
     filename: 'bundle.js'
   },
-
+  // 下記記述を書くと'Uncaught ReferenceError: fs is not defined'でスクリプトが動かなくなる
   // target: 'node',
   devtool: 'inline-source-map',
   module: {
@@ -23,9 +22,6 @@ module.exports = {
         query: {
             presets:['react','es2015']
           }
-        // options: {
-        //   presets: ['es2016', 'react']
-        // }
       }
     ]
   },
@@ -37,7 +33,7 @@ module.exports = {
     __dirname: 'mock',
     Buffer: true,
     dns: 'mock',
-    //fs: 'empty',
+    fs: 'empty',
     path: true,
     url: false
   },
