@@ -1,16 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import request from 'superagent'
-// import puppeteer from 'puppeteer'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import secret from '../secret';
 
 class BBSForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            name: '',
+            id: '',
             password: ''
         }
     }
@@ -20,12 +18,11 @@ class BBSForm extends React.Component {
         <div style={styles.form}>
             <form style={styles.login} noValidate autoComplete="off">
                 <TextField
-                    id="name"
-                    label="Name"
-                    className="coloredText"
+                    id="id"
+                    label="ID"
                     style={styles.textField}
-                    value={this.state.userid}
-                    onChange={e => changed('userid', e)}
+                    value={this.state.id}
+                    onChange={e => this.idChanged(e)}
                     margin="normal"
                 />
                 <br />
@@ -33,35 +30,50 @@ class BBSForm extends React.Component {
                     id="password-input"
                     label="Password"
                     type="password"
-                    className={styles.textField}
                     style={styles.textField}
-                    value={this.state.passwd}
-                    onChange={e => changed('passwd', e)}
+                    value={this.state.password}
+                    onChange={e => this.passwordChanged(e)}
                     autoComplete="current-password"
                     margin="normal"
                 />
             </form>
-            <Button variant="raised" color="primary" onClick={e => this.post()} style={styles.button}>
-                GET DATA
+            <Button variant="raised" color="primary" onClick={e => this.getPolatData()} style={styles.button}>
+                GET DATA A
             </Button>
         </div>
         )
     }
 
-    nameChanged(e) {
-        this.setState({name: e.target.value})
+    idChanged(e) {
+        this.setState({id: e.target.value})
     }
 
-    bodyChanged(e) {
-        this.setState({body: e.target.value})
+    passwordChanged(e) {
+        this.setState({password: e.target.value})
+    }
+
+    getPolatData(e) {
+        console.log('getPolatData')
+        request
+        .get('/api/getPolarData')
+        .query({
+            id: this.state.id,
+            password: this.state.password,
+        })
+        .end((err, data) => {
+            if (err) {
+                console.error(err)
+            }
+            this.setState({id: '', password: ''})
+        })
     }
 
     post(e) {
         request
         .get('/api/write')
         .query({
-            name: this.state.name,
-            body: this.state.body
+            name: 'yuri',
+            body: 'text'
         })
         .end((err, data) => {
             if (err) {
@@ -85,6 +97,7 @@ class BBSApp extends React.Component {
   }
   
     componentWillMount () {
+        console.log('componentWillMount')
         this.loadLogs()
     }
 
@@ -97,7 +110,7 @@ class BBSApp extends React.Component {
             <BBSForm onPost={e => this.loadLogs()} />
             <p style={styles.right}>
             <Button variant="raised" color="primary" onClick={e => this.getPolarData()} style={styles.button}>
-                GET DATA
+                GET DATA B
             </Button></p>
             <ul>{itemsHtml}</ul>
         </div>
@@ -120,57 +133,6 @@ class BBSApp extends React.Component {
     async getLoginStatus(page, url) {
         await page.goto(url)
         return await page.evaluate(() => document.getElementById('g-console').children[0].firstChild.textContent.trim())
-    }
-
-    async getPolarData() {
-        const input = {
-            id: secret.id,
-            password: secret.password,
-        }
-
-        // try {
-        //     const browser = await puppeteer.launch()
-        //     const page = await browser.newPage()
-        
-        //     const btnText = await getLoginStatus(page, 'https://www.b-monster.jp/')
-        
-        //     if (btnText === 'LOGIN') {
-        //         // ログインモーダルを開く 
-        //         let modalTriggerBtn = await page.$('#g-console .modal-trigger');
-        //         await modalTriggerBtn.click();
-        //         await page.waitFor(1000);
-        
-        //         // フォームに入力
-        //         await page.type("#your-id", input.id);
-        //         await page.type("#your-password", input.password);
-        //         let loginBtn = await page.$('#login-btn');
-        //         await loginBtn.click();
-        //         await page.waitFor(1000);
-        
-        //         // ポラールのアクティビティ画面へ遷移
-        //         const polarActivity = await page.$('#contents a[href="https://www.b-monster.jp/mypage/activity_report/"]');
-        //         await polarActivity.click();
-        //         await page.waitFor(1000);
-        //         await page.screenshot({path: 'home2.png', fullPage: true});
-        
-        //         // 日時・時間・消費カロリーを取得する
-        //         let list = await page.$$('#main-container .activity-report-list a');
-        //         var datas = [];
-        //         for (let i = 0; i < list.length; i++) {
-        //           var data = {
-        //             date: await list[i].$eval('.activity-report-list-date .day', nodes => nodes.innerText),
-        //             time: await list[i].$eval('.activity-report-list-detail .time', nodes => nodes.innerText),
-        //             col: await list[i].$eval('.col .value', nodes => nodes.innerText),
-        //           };
-        //           datas.push(data);
-        //         }
-        //         console.log(datas)
-        //     }
-        
-        //     browser.close()
-        //   } catch(e) {
-        //     console.error(e)
-        //   }
     }
 }
 
