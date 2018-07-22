@@ -11,7 +11,6 @@ module.exports = {
     filename: 'bundle.js'
   },
   // 下記記述を書くと'Uncaught ReferenceError: fs is not defined'でスクリプトが動かなくなる
-  // target: 'node',
   devtool: 'inline-source-map',
   module: {
     rules: [
@@ -37,7 +36,7 @@ module.exports = {
     path: true,
     url: false
   },
-  externals: ['crypto', 'fs'],
+  externals: ['crypto', 'fs', 'child_process', 'net', 'readline', 'tls'],
   plugins: [
     new webpack.DefinePlugin({ "global.GENTLY": false }),
     new webpack.DefinePlugin({ IS_BROWSER: true })
