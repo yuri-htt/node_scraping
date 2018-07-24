@@ -29,14 +29,22 @@ app.get('/api/getItems', (req, res) => {
             sendJSON(res, false, {logs: [], msg: err})
             return
         }
-        console.log(data)
         sendJSON(res, true, {logs: data})
     })
 })
 
-app.get('/api/getPolarData', (req, res) => {
-    var polarDatas = getPolarData(req.query)
-    console.log(polarDatas)
+app.get('/api/getPolarData', async (req, res) => {
+    const polarDatas = await getPolarData(req.query)
+    db.insert({
+        polarDatas: polarDatas,
+    }, (err, doc) => {
+        if (err) {
+            console.error(err)
+            sendJSON(res, false, {msg: err})
+            return
+        }
+        sendJSON(res, true, {id: doc._id})
+    })
 })
   
 // API:DBにデータを保存
@@ -63,7 +71,6 @@ function sendJSON (res, result, obj) {
 }
 
 async function getPolarData(query) {
-    console.log('GetPolarData')
     const input = {
         id: query.id,
         password: query.password,
@@ -105,7 +112,6 @@ async function getPolarData(query) {
               };
               datas.push(data);
             }
-            console.log(datas)
         }
     
         browser.close()
