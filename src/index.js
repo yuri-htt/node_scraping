@@ -4,7 +4,45 @@ import request from 'superagent'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-class BBSForm extends React.Component {
+class App extends React.Component {
+    constructor (props) {
+      super(props)
+      this.state = {
+        items: []
+      }
+    }
+    
+      componentWillMount () {
+          this.loadLogs()
+      }
+  
+      render () {
+          const itemsHtml = this.state.items.map(e => (
+          <li key={e._id}>{e.name} - {e.body}</li>
+          ))
+          return (
+          <div style={styles.background}>
+              <LoginForm onPost={e => this.loadLogs()} />
+              <ul>{itemsHtml}</ul>
+          </div>
+          )
+      }
+  
+      // APIにアクセスしてDBのデータを読み取る
+      loadLogs () {
+          request
+          .get('/api/getItems')
+          .end((err, data) => {
+            if (err) {
+              console.error(err)
+              return
+            }
+            this.setState({items: data.body.logs})
+          })
+      }
+  }
+
+class LoginForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -69,55 +107,6 @@ class BBSForm extends React.Component {
     }
 }
 
-// メインコンポーネント
-class BBSApp extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      items: []
-    }
-  }
-  
-    componentWillMount () {
-        console.log('componentWillMount')
-        this.loadLogs()
-    }
-
-    render () {
-        const itemsHtml = this.state.items.map(e => (
-        <li key={e._id}>{e.name} - {e.body}</li>
-        ))
-        return (
-        <div style={styles.background}>
-            <BBSForm onPost={e => this.loadLogs()} />
-            <p style={styles.right}>
-            <Button variant="raised" color="primary" onClick={e => this.getPolarData()} style={styles.button}>
-                GET DATA B
-            </Button></p>
-            <ul>{itemsHtml}</ul>
-        </div>
-        )
-    }
-
-    // APIにアクセスして掲示板のログ一覧を取得
-    loadLogs () {
-        request
-        .get('/api/getItems')
-        .end((err, data) => {
-            if (err) {
-            console.error(err)
-            return
-            }
-            this.setState({items: data.body.logs})
-        })
-    }
-
-    async getLoginStatus(page, url) {
-        await page.goto(url)
-        return await page.evaluate(() => document.getElementById('g-console').children[0].firstChild.textContent.trim())
-    }
-}
-
 const styles = {
     background: {
         height: 1000,
@@ -129,8 +118,13 @@ const styles = {
         margin: 0,
         padding: 0
     },
-    form: {
+    form : {
+        width: 500,
+    },
+    login: {
         padding: 16,
+        justifyContent: 'center',
+        backgroundColor: 'green'
     },
     textField: {
         color: 'white',
@@ -141,5 +135,5 @@ const styles = {
 }
 
 ReactDOM.render(
-  <BBSApp />,
+  <App />,
   document.getElementById('root'))
