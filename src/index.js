@@ -67,24 +67,6 @@ class BBSForm extends React.Component {
             this.setState({id: '', password: ''})
         })
     }
-
-    post(e) {
-        request
-        .get('/api/write')
-        .query({
-            name: 'yuri',
-            body: 'text'
-        })
-        .end((err, data) => {
-            if (err) {
-            console.error(err)
-            }
-            this.setState({body: ''})
-            if (this.props.onPost) {
-            this.props.onPost()
-            }
-        })
-    }
 }
 
 // メインコンポーネント
