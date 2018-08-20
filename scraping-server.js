@@ -109,6 +109,8 @@ async function getPolarData(query) {
                 date: await list[i].$eval('.activity-report-list-date .day', nodes => nodes.innerText),
                 time: await list[i].$eval('.activity-report-list-detail .time', nodes => nodes.innerText),
                 col: await list[i].$eval('.col .value', nodes => nodes.innerText),
+                avrBpm: await list[i].$eval('.avr-bpm .value', nodes => nodes.innerText),
+                maxBpm: await list[i].$eval('.max-bpm .value', nodes => nodes.innerText),
               };
               datas.push(data);
             }
